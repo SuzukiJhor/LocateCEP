@@ -6,6 +6,7 @@ import './styles.css';
 function App() {
 
   const [input, setInput] = useState('');
+  const [cep, setCep] = useState('');
 
   async function handleSearch() {
     if (!input) {
@@ -15,36 +16,43 @@ function App() {
     try {
       const response = await api.get(`${input}/json`);
       console.log(response)
+      setCep(response.data)
     } catch {
       alert('error')
+      setInput("")
     }
   }
 
   return (
     <div className="container">
-     <h1 className="title">Buscador CEP</h1>
+      <h1 className="title">Buscador CEP</h1>
 
-     <div className="container-input">
-      <input 
-      type="text"
-      placeholder="Digite seu CEP"
-      value={input}
-      onChange={(e)=> setInput(e.target.value)}
-      />
+      <div className="container-input">
+        <input
+          type="text"
+          placeholder="Digite seu CEP"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
 
-      <button className="buttonSearch" onClick={handleSearch}>
-        <FiSearch size={25} color="#FFF"/>
-      </button>
-     </div>
+        <button className="buttonSearch" onClick={handleSearch}>
+          <FiSearch size={25} color="#FFF" />
+        </button>
+      </div>
 
-     <main className='main'>
-    <h2> CEP: 7912846</h2>
+      {Object.keys(cep).length > 0 && (
+        <main className='main'>
+          <h2> CEP: {cep.cep}</h2>
 
-    <span>Rua TESTE</span>
-    <span>Complemento: Algum complemneto</span>
-    <span>Vila Bosque</span>
-    <span>Campo Grande - MT</span>
-     </main>
+          <span>{cep.logradouro}</span>
+          <span>Complemento: {cep.complemento}</span>
+          <span>{cep.bairro}</span>
+          <span>{cep.localidade} - {cep.uf}</span>
+          <span>DDD: {cep.ddd}</span>
+        </main>
+      )}
+
+
     </div>
   );
 }
